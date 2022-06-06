@@ -1,0 +1,16 @@
+name: Lockdown
+version: '${project.version}'
+main: ru.whbex.lockdown.Lockdown
+api-version: 1.18
+prefix: Lockdown
+authors: [ whitebelyash ]
+description: Lockdown plugin
+commands:
+  lockdown:
+    usage: /lockdown
+    permission: lockdown.use
+    description: Lockdown main command
+  lddev:
+    usage: /lddev
+    permission: lockdown.dev
+    description: Lockdown dev command
