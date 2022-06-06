@@ -7,20 +7,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-public class LockdownCommand extends AbstractCommand {
-    LockdownCommand(){
-        super(
-                "lockdown",
-                "lockdown.use",
-                "Основная команда Lockdown",
-                "<подкоманда> [аргументы..] | Для просмотра подкоманд введите /lockdown help",
-                1,
-                "help",
-                false,
-                true,
-                Arrays.asList(new ToggleCommand(), new StatusCommand(), new HelpCommand()));
-    }
-    ExitStatus commandExec(CommandSender sender, List<String> args, Set<String> flags){
+@CommandInfo(name = "lockdown",
+        internalname = "lockdown",
+        description = "Lockdown",
+        permission = "lockdown.use",
+        defaultCmd = "help",
+        minArgs = 1)
+public class LockdownCommand implements ICommand {
+    public ExitStatus exec(CommandSender sender, List<String> args, Set<String> flags){
         sender.sendMessage(ChatColor.RED + "/lockdown возможно использовать только в паре с подкомандой");
         return ExitStatus.ERROR_OTHER;
 

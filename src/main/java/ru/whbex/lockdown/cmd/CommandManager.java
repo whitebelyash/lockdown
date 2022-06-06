@@ -4,14 +4,19 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import ru.whbex.lockdown.Lockdown;
 
 import java.util.*;
 
 public class CommandManager implements CommandExecutor {
-    private final Set<AbstractCommand> commands = new HashSet<>();
-    private final Map<String, AbstractCommand> registeredCommands = new HashMap<>();
+    private final Set<ICommand> commands = new HashSet<>();
+    private final Map<String, ICommand> registeredCommands = new HashMap<>();
+    // пришлось тут костылить, чтобы конфликтов не было
+    // мапа вида ICommand: help: ICommand(help), cmd1, cmd2, etc.. (используется name для сравнения с args[0]
+    // если использовать везде только name - будут конфликты между одинаковыми подкомандами разных команд
+    private final Map<ICommand, Map<String, ICommand>> parentsMap = new HashMap<>();
     // я хз тут мб можно и по-другому реализовать, но пока что так
     public CommandManager(Lockdown instance){
         // команды добавлять сюда
@@ -19,48 +24,71 @@ public class CommandManager implements CommandExecutor {
         commands.add(new LockdownDevCommand());
         // регистрация команд
         commands.forEach(cmd -> {
-            registeredCommands.put(cmd.name, cmd);
-            instance.getCommand(cmd.name).setExecutor(this);
-
+            String cmdName = cmd.getClass().getAnnotation(CommandInfo.class).internalname();
+            String cmdParent = cmd.getClass().getAnnotation(CommandInfo.class).parent();
+            registeredCommands.put(cmdName, cmd);
+            if(cmdParent.isEmpty()){
+                PluginCommand command = instance.getCommand(cmdName);
+                if(command == null){
+                    instance.getLogger().severe(String.format("Couldn't register command %s. Is it exists?", cmdName));
+                    return;
+                }
+                command.setExecutor(this);
+            }
         });
+        for(ICommand value : registeredCommands.values()){
+            if(value.getClass().getAnnotation(CommandInfo.class).parent().isEmpty()) continue;
+            ICommand parent = registeredCommands.get(value.getClass().getAnnotation(CommandInfo.class).parent());
+            if(parent == null) continue;
+            addSetIntoMap(parent, value.getClass().getAnnotation(CommandInfo.class).name(), value);
+        }
+        instance.getLogger().info("Command registration finished");
     }
 
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
-        AbstractCommand toExecute = registeredCommands.get(cmd.getName());
-        List<String > argsl = new ArrayList<>(Arrays.asList(args));
-        if(args.length < toExecute.minArgs){
-            sender.sendMessage(ChatColor.RED + "Использование: /" + toExecute.name + " " + toExecute.usage);
+        // Stage pre1: preparing
+        List<String> argsl = new ArrayList<>(Arrays.asList(args));
+        ICommand toExec = getCommand(cmd.getName());
+        CommandInfo toExecInfo = toExec.getClass().getAnnotation(CommandInfo.class);
+        final String commandUsage = ChatColor.RED + "Использование: /" + toExecInfo.name() + " " + toExecInfo.usage();
+        final String onlyPlayer = ChatColor.RED + "Данную команду можно выполнить только будучи игроком";
+        final String onlyConsole = ChatColor.RED + "Данную команду можно выполнить только из консоли";
+        // Checks
+        if(args.length < toExecInfo.minArgs()){
+            sender.sendMessage(commandUsage);
             return true;
         }
-        if((!sender.hasPermission(toExecute.permission)) && sender instanceof Player) {
-            sender.sendMessage("Недостаточно прав");
+        if(!(sender instanceof Player) && toExecInfo.requirePlayer()){
+            sender.sendMessage(onlyPlayer);
             return true;
         }
+        if(sender instanceof Player && toExecInfo.onlyConsole()){
+            sender.sendMessage(onlyConsole);
+            return true;
+        }
+        // Stage 1: execute simple command
+        if(toExecInfo.parent().isEmpty()) return executeCmd(toExec, sender, argsl);
 
-        if(toExecute.hasChildren){
-            AbstractCommand toExecuteSub = null;
-            for(AbstractCommand record : toExecute.children){
-                if(record.name.equals(args[0])){
-                    toExecuteSub = record;
-                    break;
-                }
-            }
-            if(toExecuteSub == null){
-                sender.sendMessage(ChatColor.RED + "Использование: /" + toExecute.name + " " + toExecute.usage);
-                return true;
-            }
-            argsl.remove(0);
-            if(argsl.size() < toExecuteSub.minArgs){
-                sender.sendMessage(ChatColor.RED + "Использование: /" + toExecute.name + " " + toExecuteSub.name + " " + toExecuteSub.usage);
-            }
-            return this.executeCmd(toExecuteSub, sender, argsl, null);
+        // Stage 2: electric boogaloo (execute subcommand)
+        String subCmd = argsl.get(0);
+        argsl.remove(0);
+        if(parentsMap.get(toExec).containsKey(subCmd)){
+            return executeCmd(parentsMap.get(toExec).get(subCmd), sender, argsl);
         }
-        return this.executeCmd(toExecute, sender, argsl, null);
+        if(toExecInfo.defaultCmd().isEmpty()){
+            sender.sendMessage(commandUsage);
+            return true;
+        }
+        return executeCmd(registeredCommands.get(toExecInfo.defaultCmd()), sender, argsl);
+
+
+
+
 
     }
-    private boolean executeCmd(AbstractCommand cmd, CommandSender sender, List<String> args, Set<String> flags){
-        switch(cmd.commandExec(sender, args, flags)){
+    private boolean executeCmd(ICommand cmd, CommandSender sender, List<String> args){
+        switch(cmd.exec(sender, args, null)){
             case ERROR_USAGE:
                 sender.sendMessage(ChatColor.RED + "Неверное использование команды");
                 break;
@@ -75,10 +103,16 @@ public class CommandManager implements CommandExecutor {
         }
         return true;
     }
-    public Set<AbstractCommand> getCommandSet(){
+    public Set<ICommand> getCommandSet(){
         return commands;
     }
-    public AbstractCommand getCommand(String name){
+    public ICommand getCommand(String name){
         return registeredCommands.get(name);
+    }
+    private void addSetIntoMap(ICommand key, String toAddKey, ICommand toAddValue){
+        Map<String, ICommand> map = new HashMap<>();
+        if(parentsMap.get(key) != null) map = parentsMap.get(key);
+        map.put(toAddKey, toAddValue);
+        parentsMap.put(key, map);
     }
 }

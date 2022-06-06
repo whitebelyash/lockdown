@@ -8,19 +8,15 @@ import ru.whbex.lockdown.Utils;
 import java.util.List;
 import java.util.Set;
 
-public class StatusCommand extends AbstractCommand {
-    StatusCommand(){
-        super("status",
-                "lockdown.status",
-                "Просмотр состояния Lockdown",
-                "",
-                "help",
-                0,
-                false);
-    }
+@CommandInfo(name = "status",
+        internalname = "status",
+        description = "Lockdown status",
+        permission = "lockdown.status",
+        parent = "lockdown")
+public class StatusCommand implements ICommand {
 
     @Override
-    ExitStatus commandExec(CommandSender sender, List<String> args, Set<String> flags) {
+    public ExitStatus exec(CommandSender sender, List<String> args, Set<String> flags) {
         String pref = ChatColor.GOLD + "Lockdown " + ChatColor.DARK_GRAY + "> " + ChatColor.RESET;
         sender.sendMessage(pref + "Сервер закрыт: " + Utils.parseBool(Lockdown.getInstance().isActive()));
         return ExitStatus.SUCCESS;

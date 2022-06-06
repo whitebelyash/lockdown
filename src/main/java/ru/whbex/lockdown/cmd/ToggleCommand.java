@@ -7,19 +7,15 @@ import ru.whbex.lockdown.Lockdown;
 import java.util.List;
 import java.util.Set;
 
-public class ToggleCommand extends AbstractCommand {
-    ToggleCommand(){
-        super("toggle",
-                "lockdown.toggle",
-                "Включение/выключение Lockdown",
-                "[on/off]",
-                "help",
-                0,
-                false);
-    }
+@CommandInfo(name = "toggle",
+        internalname = "toggle",
+        description = "Lockdown toggle",
+        permission = "lockdown.toggle",
+        parent = "lockdown")
+public class ToggleCommand implements ICommand{
 
     @Override
-    ExitStatus commandExec(CommandSender sender, List<String> args, Set<String> flags) {
+    public ExitStatus exec(CommandSender sender, List<String> args, Set<String> flags) {
         Lockdown instance = Lockdown.getInstance();
         boolean toggle = true;
         String pref = ChatColor.GOLD + "Lockdown " + ChatColor.DARK_GRAY + "> " + ChatColor.RESET;
