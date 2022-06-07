@@ -22,6 +22,10 @@ public class CommandManager implements CommandExecutor {
         // команды добавлять сюда
         commands.add(new LockdownCommand());
         commands.add(new LockdownDevCommand());
+        commands.add(new HelpCommand());
+        commands.add(new HelpDevCommand());
+        commands.add(new StatusCommand());
+        commands.add(new ToggleCommand());
         // регистрация команд
         commands.forEach(cmd -> {
             String cmdName = cmd.getClass().getAnnotation(CommandInfo.class).internalname();
@@ -37,10 +41,13 @@ public class CommandManager implements CommandExecutor {
             }
         });
         for(ICommand value : registeredCommands.values()){
-            if(value.getClass().getAnnotation(CommandInfo.class).parent().isEmpty()) continue;
-            ICommand parent = registeredCommands.get(value.getClass().getAnnotation(CommandInfo.class).parent());
+            CommandInfo valueInfo = value.getClass().getAnnotation(CommandInfo.class);
+            instance.getLogger().info(String.format("debug: name: %s, iname: %s, parent: %s, defaultcmd: %s", valueInfo.name(), valueInfo.internalname(), valueInfo.parent(), valueInfo.defaultCmd()));
+            if(valueInfo.parent().equals("")) continue;
+            ICommand parent = registeredCommands.get(valueInfo.parent());
             if(parent == null) continue;
-            addSetIntoMap(parent, value.getClass().getAnnotation(CommandInfo.class).name(), value);
+            addSetIntoMap(parent, valueInfo.name(), value);
+            instance.getLogger().info(String.format("debug: parent: %s, name: %s, value: %s", parent.toString(), valueInfo.name(), value.toString()));
         }
         instance.getLogger().info("Command registration finished");
     }
@@ -68,14 +75,17 @@ public class CommandManager implements CommandExecutor {
             return true;
         }
         // Stage 1: execute simple command
-        if(toExecInfo.parent().isEmpty()) return executeCmd(toExec, sender, argsl);
+        sender.sendMessage("EXEC: " + toExecInfo.parent());
+        if(!toExecInfo.hasChildren()) return executeCmd(toExec, sender, argsl);
 
         // Stage 2: electric boogaloo (execute subcommand)
         String subCmd = argsl.get(0);
         argsl.remove(0);
         if(parentsMap.get(toExec).containsKey(subCmd)){
+            sender.sendMessage("EXEC: " + subCmd + " " + parentsMap.get(toExec).get(subCmd).toString());
             return executeCmd(parentsMap.get(toExec).get(subCmd), sender, argsl);
         }
+        // TODO: добавить возможность запуска команды с подкомандами без требования аргументов
         if(toExecInfo.defaultCmd().isEmpty()){
             sender.sendMessage(commandUsage);
             return true;

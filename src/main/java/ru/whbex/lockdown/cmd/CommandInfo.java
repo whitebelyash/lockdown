@@ -15,4 +15,5 @@ public @interface CommandInfo {
     int minArgs() default 0;
     boolean requirePlayer() default false;
     boolean onlyConsole() default false;
+    boolean hasChildren() default false;
 }
