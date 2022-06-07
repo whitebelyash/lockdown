@@ -15,7 +15,7 @@ import java.util.Set;
         hasChildren = true,
         minArgs = 1)
 public class LockdownCommand implements ICommand {
-    public ExitStatus exec(CommandSender sender, List<String> args, Set<String> flags){
+    public ExitStatus exec(CommandManager manager, CommandSender sender, List<String> args, Set<String> flags){
         sender.sendMessage(ChatColor.RED + "/lockdown возможно использовать только в паре с подкомандой");
         return ExitStatus.ERROR_OTHER;
 

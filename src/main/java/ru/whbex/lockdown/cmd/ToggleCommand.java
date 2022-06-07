@@ -9,13 +9,13 @@ import java.util.Set;
 
 @CommandInfo(name = "toggle",
         internalname = "toggle",
-        description = "Lockdown toggle",
+        description = "Изменение статуса Lockdown",
         permission = "lockdown.toggle",
         parent = "lockdown")
 public class ToggleCommand implements ICommand{
 
     @Override
-    public ExitStatus exec(CommandSender sender, List<String> args, Set<String> flags) {
+    public ExitStatus exec(CommandManager manager, CommandSender sender, List<String> args, Set<String> flags) {
         Lockdown instance = Lockdown.getInstance();
         boolean toggle = true;
         String pref = ChatColor.GOLD + "Lockdown " + ChatColor.DARK_GRAY + "> " + ChatColor.RESET;

@@ -1,9 +1,12 @@
 package ru.whbex.lockdown.cmd;
 
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
+@Target(value = ElementType.TYPE)
 public @interface CommandInfo {
     String name();
     String internalname();
@@ -16,4 +19,5 @@ public @interface CommandInfo {
     boolean requirePlayer() default false;
     boolean onlyConsole() default false;
     boolean hasChildren() default false;
+    boolean allowExecuteSingle() default false;
 }

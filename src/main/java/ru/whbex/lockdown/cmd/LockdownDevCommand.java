@@ -18,7 +18,7 @@ public class LockdownDevCommand implements ICommand {
 
 
     @Override
-   public ExitStatus exec(CommandSender sender, List<String> args, Set<String> flags) {
+   public ExitStatus exec(CommandManager manager, CommandSender sender, List<String> args, Set<String> flags) {
         sender.sendMessage(ChatColor.RED + "/lddev возможно использовать только в паре с подкомандой");
         return ExitStatus.SUCCESS;
     }

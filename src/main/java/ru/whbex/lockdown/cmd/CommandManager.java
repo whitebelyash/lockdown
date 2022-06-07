@@ -50,7 +50,7 @@ public class CommandManager implements CommandExecutor {
         instance.getLogger().info("Command registration finished");
     }
 
-
+    @SuppressWarnings("NullableProblems")
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
         // Stage pre1: preparing
         List<String> argsl = new ArrayList<>(Arrays.asList(args));
@@ -81,7 +81,7 @@ public class CommandManager implements CommandExecutor {
         argsl.remove(0);
         if(parentsMap.get(toExec).containsKey(subCmd))
             return executeCmd(parentsMap.get(toExec).get(subCmd), sender, argsl);
-        // TODO: добавить возможность запуска команды с подкомандами без требования аргументов
+        if(toExecInfo.allowExecuteSingle()) return executeCmd(toExec, sender, argsl);
         if(toExecInfo.defaultCmd().isEmpty()){
             sender.sendMessage(commandUsage);
             return true;
@@ -94,7 +94,7 @@ public class CommandManager implements CommandExecutor {
 
     }
     private boolean executeCmd(ICommand cmd, CommandSender sender, List<String> args){
-        switch(cmd.exec(sender, args, null)){
+        switch(cmd.exec(this, sender, args, null)){
             case ERROR_USAGE:
                 sender.sendMessage(ChatColor.RED + "Неверное использование команды");
                 break;
@@ -114,6 +114,12 @@ public class CommandManager implements CommandExecutor {
     }
     public ICommand getCommand(String name){
         return registeredCommands.get(name);
+    }
+    public Map<String, ICommand> getChildCommands(ICommand parent){
+        return parentsMap.get(parent);
+    }
+    public Map<String, ICommand> getChildCommands(String parent){
+        return parentsMap.get(getCommand(parent));
     }
     private void addSetIntoMap(ICommand key, String toAddKey, ICommand toAddValue){
         Map<String, ICommand> map = new HashMap<>();
