@@ -36,7 +36,7 @@ public class CommandManager implements CommandExecutor {
             if(cmdParent.isEmpty()){
                 PluginCommand command = instance.getCommand(cmdName);
                 if(command == null){
-                    instance.getLogger().severe(String.format("Couldn't register command %s. Is it exists?", cmdName));
+                    instance.getLogger().severe(String.format("Couldn't register command %s. Does it exist?", cmdName));
                     return;
                 }
                 command.setExecutor(this);
