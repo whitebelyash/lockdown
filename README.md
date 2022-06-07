@@ -10,3 +10,7 @@
 - lockdown.dev.help - [Список команд lddev]
 - lockdown.dev.about - [Информация]
 - lockdown.dev.reload - [перезагрузка конфига]
+
+## TODO
+- [ ] Автоподстановка команд
+- [ ] Флаги
