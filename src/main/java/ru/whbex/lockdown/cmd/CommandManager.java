@@ -42,12 +42,10 @@ public class CommandManager implements CommandExecutor {
         });
         for(ICommand value : registeredCommands.values()){
             CommandInfo valueInfo = value.getClass().getAnnotation(CommandInfo.class);
-            instance.getLogger().info(String.format("debug: name: %s, iname: %s, parent: %s, defaultcmd: %s", valueInfo.name(), valueInfo.internalname(), valueInfo.parent(), valueInfo.defaultCmd()));
-            if(valueInfo.parent().equals("")) continue;
+            if(valueInfo.parent().isEmpty()) continue;
             ICommand parent = registeredCommands.get(valueInfo.parent());
             if(parent == null) continue;
             addSetIntoMap(parent, valueInfo.name(), value);
-            instance.getLogger().info(String.format("debug: parent: %s, name: %s, value: %s", parent.toString(), valueInfo.name(), value.toString()));
         }
         instance.getLogger().info("Command registration finished");
     }
@@ -81,16 +79,14 @@ public class CommandManager implements CommandExecutor {
         // Stage 2: electric boogaloo (execute subcommand)
         String subCmd = argsl.get(0);
         argsl.remove(0);
-        if(parentsMap.get(toExec).containsKey(subCmd)){
-            sender.sendMessage("EXEC: " + subCmd + " " + parentsMap.get(toExec).get(subCmd).toString());
+        if(parentsMap.get(toExec).containsKey(subCmd))
             return executeCmd(parentsMap.get(toExec).get(subCmd), sender, argsl);
-        }
         // TODO: добавить возможность запуска команды с подкомандами без требования аргументов
         if(toExecInfo.defaultCmd().isEmpty()){
             sender.sendMessage(commandUsage);
             return true;
         }
-        return executeCmd(registeredCommands.get(toExecInfo.defaultCmd()), sender, argsl);
+        return executeCmd(getCommand(toExecInfo.defaultCmd()), sender, argsl);
 
 
 
