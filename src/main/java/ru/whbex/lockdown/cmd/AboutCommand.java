@@ -11,7 +11,7 @@ import java.util.List;
         permission = "lockdown.dev.about",
         parent = "lddev",
         description = "Информация об плагине")
-public class AboutCommand implements ICommand {
+class AboutCommand implements ICommand {
 
     @Override
     public ExitStatus exec(CommandManager manager, CommandSender sender, List<String> args) {

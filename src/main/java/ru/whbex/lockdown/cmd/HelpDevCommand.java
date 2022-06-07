@@ -11,7 +11,7 @@ import java.util.List;
         description = "Вывести список команд",
         permission = "lockdown.dev.help",
         parent = "lddev")
-public class HelpDevCommand implements ICommand {
+class HelpDevCommand implements ICommand {
     @Override
     public ExitStatus exec(CommandManager manager, CommandSender sender, List<String> args){
         // Список команд

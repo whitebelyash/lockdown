@@ -13,7 +13,7 @@ import java.util.List;
         defaultCmd = "helpdev",
         hasChildren = true,
         minArgs = 1)
-public class LockdownDevCommand implements ICommand {
+class LockdownDevCommand implements ICommand {
 
 
     @Override

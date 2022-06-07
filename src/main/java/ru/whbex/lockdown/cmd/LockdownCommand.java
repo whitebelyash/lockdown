@@ -13,7 +13,7 @@ import java.util.List;
         defaultCmd = "help",
         hasChildren = true,
         minArgs = 1)
-public class LockdownCommand implements ICommand {
+class LockdownCommand implements ICommand {
     public ExitStatus exec(CommandManager manager, CommandSender sender, List<String> args){
         sender.sendMessage(ChatColor.RED + "/lockdown возможно использовать только в паре с подкомандой");
         return ExitStatus.ERROR_OTHER;

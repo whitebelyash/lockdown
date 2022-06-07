@@ -9,7 +9,7 @@ import java.util.List;
         description = "Вывести список команд",
         permission = "lockdown.use.help",
         parent = "lockdown")
-public class HelpCommand implements ICommand {
+class HelpCommand implements ICommand {
     @Override
     public ExitStatus exec(CommandManager manager, CommandSender sender, List<String> args){
         // Список команд

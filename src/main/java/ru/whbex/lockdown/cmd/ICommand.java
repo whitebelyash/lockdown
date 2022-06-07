@@ -4,6 +4,6 @@ import org.bukkit.command.CommandSender;
 
 import java.util.List;
 
-public interface ICommand {
+interface ICommand {
     ExitStatus exec(CommandManager manager, CommandSender sender, List<String> args);
 }

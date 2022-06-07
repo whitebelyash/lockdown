@@ -12,7 +12,7 @@ import java.util.List;
         description = "Изменение статуса Lockdown",
         permission = "lockdown.use.toggle",
         parent = "lockdown")
-public class ToggleCommand implements ICommand{
+class ToggleCommand implements ICommand{
 
     @Override
     public ExitStatus exec(CommandManager manager, CommandSender sender, List<String> args) {

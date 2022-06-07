@@ -13,7 +13,7 @@ import java.util.List;
         description = "Просмотр статуса Lockdown",
         permission = "lockdown.use.status",
         parent = "lockdown")
-public class StatusCommand implements ICommand {
+class StatusCommand implements ICommand {
 
     @Override
     public ExitStatus exec(CommandManager manager, CommandSender sender, List<String> args) {

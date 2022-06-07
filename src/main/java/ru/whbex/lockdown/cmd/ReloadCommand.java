@@ -11,7 +11,7 @@ import java.util.List;
         description = "Перезагрузить конфигурацию",
         permission = "lockdown.dev.reload",
         parent = "lddev")
-public class ReloadCommand implements ICommand {
+class ReloadCommand implements ICommand {
     @Override
     public ExitStatus exec(CommandManager manager, CommandSender sender, List<String> args) {
         Lockdown.getInstance().onReload();
