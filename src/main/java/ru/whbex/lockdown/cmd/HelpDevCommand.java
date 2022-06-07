@@ -22,7 +22,7 @@ public class HelpDevCommand implements ICommand {
         sender.sendMessage(pref + "Помощь (команды плагина)");
         manager.getChildCommands(this.getClass().getAnnotation(CommandInfo.class).parent()).values().forEach(value -> {
             String description = value.getClass().getAnnotation(CommandInfo.class).description();
-            String name = value.getClass().getAnnotation(CommandInfo.class).name();
+            String name = "/" + this.getClass().getAnnotation(CommandInfo.class).parent() + " " + value.getClass().getAnnotation(CommandInfo.class).name();
             sender.sendMessage(String.format(line, name, description));
         });
         return ExitStatus.SUCCESS;

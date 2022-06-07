@@ -11,7 +11,7 @@ public class JoinListener implements Listener {
     public void on(PlayerLoginEvent event){
         if(!Lockdown.getInstance().isActive()) return;
         if(event.getPlayer().hasPermission("lockdown.bypass")) return;
-        event.disallow(PlayerLoginEvent.Result.KICK_WHITELIST, "Сервер закрыт.");
+        event.disallow(PlayerLoginEvent.Result.KICK_WHITELIST, Lockdown.getInstance().getKickMessage());
 
     }
 

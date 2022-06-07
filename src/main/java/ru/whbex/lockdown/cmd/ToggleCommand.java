@@ -18,11 +18,11 @@ public class ToggleCommand implements ICommand{
     public ExitStatus exec(CommandManager manager, CommandSender sender, List<String> args, Set<String> flags) {
         Lockdown instance = Lockdown.getInstance();
         boolean toggle = true;
-        String pref = ChatColor.GOLD + "Lockdown " + ChatColor.DARK_GRAY + "> " + ChatColor.RESET;
-        String open =  pref + "Сервер успешно " + ChatColor.GREEN + "открыт";
-        String close = pref + "Сервер успешно " + ChatColor.RED + "закрыт";
-        String aopen = ChatColor.RED + "Ничего не изменилось. Сервер уже открыт";
-        String aclose = ChatColor.RED + "Ничего не изменилось. Сервер уже закрыт";
+        final String pref = ChatColor.GOLD + "Lockdown " + ChatColor.DARK_GRAY + "> " + ChatColor.RESET;
+        final String open =  pref + "Сервер успешно " + ChatColor.GREEN + "открыт";
+        final String close = pref + "Сервер успешно " + ChatColor.RED + "закрыт";
+        final String aopen = ChatColor.RED + "Ничего не изменилось. Сервер уже открыт";
+        final String aclose = ChatColor.RED + "Ничего не изменилось. Сервер уже закрыт";
         if(!(args.size() > 0)) {
             toggle = !instance.isActive();
             if(toggle) sender.sendMessage(close);

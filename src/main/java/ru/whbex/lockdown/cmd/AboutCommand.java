@@ -16,6 +16,8 @@ public class AboutCommand implements ICommand {
         sender.sendMessage(pref + "Информация об плагине");
         sender.sendMessage(String.format(line, String.format("Версия: %s", Lockdown.getInstance().getDescription().getVersion())));
         sender.sendMessage(String.format(line, String.format("Dev: %s", Lockdown.getInstance().getDescription().getAuthors())));
+        sender.sendMessage(" --- ");
+        sender.sendMessage(String.format(line, String.format("Kick message: %s", Lockdown.getInstance().getKickMessage())));
         return ExitStatus.SUCCESS;
     }
 }

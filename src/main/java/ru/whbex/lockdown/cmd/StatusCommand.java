@@ -17,7 +17,7 @@ public class StatusCommand implements ICommand {
 
     @Override
     public ExitStatus exec(CommandManager manager, CommandSender sender, List<String> args, Set<String> flags) {
-        String pref = ChatColor.GOLD + "Lockdown " + ChatColor.DARK_GRAY + "> " + ChatColor.RESET;
+        final String pref = ChatColor.GOLD + "Lockdown " + ChatColor.DARK_GRAY + "> " + ChatColor.RESET;
         sender.sendMessage(pref + "Сервер закрыт: " + Utils.parseBool(Lockdown.getInstance().isActive()));
         return ExitStatus.SUCCESS;
     }
