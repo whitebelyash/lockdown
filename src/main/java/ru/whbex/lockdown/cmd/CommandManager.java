@@ -78,19 +78,25 @@ public class CommandManager implements CommandExecutor {
         // Stage 2: electric boogaloo (execute subcommand)
         String subCmd = argsl.get(0);
         argsl.remove(0);
-        if(parentsMap.get(toExec).containsKey(subCmd))
+        if(parentsMap.get(toExec).containsKey(subCmd)){
+            // Checks 2
+            CommandInfo subCmdInfo = parentsMap.get(toExec).get(subCmd).getClass().getAnnotation(CommandInfo.class);
+            if(!(sender instanceof Player) && subCmdInfo.requirePlayer()){
+                sender.sendMessage(onlyPlayer);
+                return true;
+            }
+            if(sender instanceof Player && subCmdInfo.onlyConsole()){
+                sender.sendMessage(onlyConsole);
+                return true;
+            }
             return executeCmd(parentsMap.get(toExec).get(subCmd), sender, argsl);
+        }
         if(toExecInfo.allowExecuteSingle()) return executeCmd(toExec, sender, argsl);
         if(toExecInfo.defaultCmd().isEmpty()){
             sender.sendMessage(commandUsage);
             return true;
         }
         return executeCmd(getCommand(toExecInfo.defaultCmd()), sender, argsl);
-
-
-
-
-
     }
     private boolean executeCmd(ICommand cmd, CommandSender sender, List<String> args){
         switch(cmd.exec(this, sender, args, null)){
