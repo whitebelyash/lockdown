@@ -11,7 +11,7 @@ import java.util.Set;
 @CommandInfo(name = "status",
         internalname = "status",
         description = "Просмотр статуса Lockdown",
-        permission = "lockdown.status",
+        permission = "lockdown.use.status",
         parent = "lockdown")
 public class StatusCommand implements ICommand {
 

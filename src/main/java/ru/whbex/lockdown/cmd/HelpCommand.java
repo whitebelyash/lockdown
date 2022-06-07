@@ -11,7 +11,7 @@ import java.util.Set;
         name = "help",
         internalname = "help",
         description = "Вывести список команд",
-        permission = "lockdown.help",
+        permission = "lockdown.use.help",
         parent = "lockdown")
 public class HelpCommand implements ICommand {
     @Override

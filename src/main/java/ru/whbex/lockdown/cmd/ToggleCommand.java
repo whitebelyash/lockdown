@@ -10,7 +10,7 @@ import java.util.Set;
 @CommandInfo(name = "toggle",
         internalname = "toggle",
         description = "Изменение статуса Lockdown",
-        permission = "lockdown.toggle",
+        permission = "lockdown.use.toggle",
         parent = "lockdown")
 public class ToggleCommand implements ICommand{
 

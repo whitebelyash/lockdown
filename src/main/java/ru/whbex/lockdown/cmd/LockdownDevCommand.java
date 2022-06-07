@@ -10,7 +10,7 @@ import java.util.Set;
 @CommandInfo(name = "lddev",
         internalname = "lddev",
         description = "Lockdown",
-        permission = "lockdown.usedev",
+        permission = "lockdown.dev",
         defaultCmd = "helpdev",
         hasChildren = true,
         minArgs = 1)
