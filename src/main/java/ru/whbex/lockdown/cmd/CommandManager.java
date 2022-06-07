@@ -73,7 +73,6 @@ public class CommandManager implements CommandExecutor {
             return true;
         }
         // Stage 1: execute simple command
-        sender.sendMessage("EXEC: " + toExecInfo.parent());
         if(!toExecInfo.hasChildren()) return executeCmd(toExec, sender, argsl);
 
         // Stage 2: electric boogaloo (execute subcommand)
