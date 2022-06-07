@@ -5,7 +5,7 @@ import ru.whbex.lockdown.cmd.CommandManager;
 
 public final class Lockdown extends JavaPlugin {
     private static Lockdown instance;
-    private static CommandManager cmdmgr;
+    private CommandManager cmdmgr;
     private boolean active = false;
 
     @Override
