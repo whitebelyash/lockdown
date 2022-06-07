@@ -14,6 +14,8 @@ public final class Lockdown extends JavaPlugin {
     public void onEnable() {
         cmdmgr = new CommandManager(this);
         getServer().getPluginManager().registerEvents(new JoinListener(), this);
+        this.saveDefaultConfig();
+        this.setupConfig();
         instance = this;
         getLogger().info(String.format("Enabled %s %s", getDescription().getName(), getDescription().getVersion()));
 
