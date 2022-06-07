@@ -47,7 +47,7 @@ public class CommandManager implements CommandExecutor {
             if(valueInfo.parent().isEmpty()) continue;
             ICommand parent = registeredCommands.get(valueInfo.parent());
             if(parent == null) continue;
-            addSetIntoMap(parent, valueInfo.name(), value);
+            addAnotherMapIntoMap(parent, valueInfo.name(), value);
         }
         instance.getLogger().info("Command registration finished");
     }
@@ -128,7 +128,7 @@ public class CommandManager implements CommandExecutor {
     public Map<String, ICommand> getChildCommands(String parent){
         return parentsMap.get(getCommand(parent));
     }
-    private void addSetIntoMap(ICommand key, String toAddKey, ICommand toAddValue){
+    private void addAnotherMapIntoMap(ICommand key, String toAddKey, ICommand toAddValue){
         Map<String, ICommand> map = new HashMap<>();
         if(parentsMap.get(key) != null) map = parentsMap.get(key);
         map.put(toAddKey, toAddValue);
