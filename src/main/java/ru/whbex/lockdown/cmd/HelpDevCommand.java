@@ -2,10 +2,8 @@ package ru.whbex.lockdown.cmd;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import ru.whbex.lockdown.Lockdown;
 
 import java.util.List;
-import java.util.Set;
 
 @CommandInfo(
         name = "help",
@@ -15,8 +13,8 @@ import java.util.Set;
         parent = "lddev")
 public class HelpDevCommand implements ICommand {
     @Override
-    public ExitStatus exec(CommandManager manager, CommandSender sender, List<String> args, Set<String> flags){
-        // build help for lockdown
+    public ExitStatus exec(CommandManager manager, CommandSender sender, List<String> args){
+        // Список команд
         final String pref = ChatColor.GOLD + "Lockdown " + ChatColor.DARK_GRAY + "> " + ChatColor.RESET;
         final String line = ChatColor.DARK_GRAY + " > " + ChatColor.GRAY + "%s - " + ChatColor.RESET + "%s";
         sender.sendMessage(pref + "Помощь (команды плагина)");

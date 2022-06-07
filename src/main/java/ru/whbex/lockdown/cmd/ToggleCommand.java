@@ -5,9 +5,9 @@ import org.bukkit.command.CommandSender;
 import ru.whbex.lockdown.Lockdown;
 
 import java.util.List;
-import java.util.Set;
 
-@CommandInfo(name = "toggle",
+@CommandInfo(
+        name = "toggle",
         internalname = "toggle",
         description = "Изменение статуса Lockdown",
         permission = "lockdown.use.toggle",
@@ -15,7 +15,7 @@ import java.util.Set;
 public class ToggleCommand implements ICommand{
 
     @Override
-    public ExitStatus exec(CommandManager manager, CommandSender sender, List<String> args, Set<String> flags) {
+    public ExitStatus exec(CommandManager manager, CommandSender sender, List<String> args) {
         Lockdown instance = Lockdown.getInstance();
         boolean toggle = true;
         final String pref = ChatColor.GOLD + "Lockdown " + ChatColor.DARK_GRAY + "> " + ChatColor.RESET;

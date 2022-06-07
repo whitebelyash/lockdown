@@ -11,7 +11,6 @@ import ru.whbex.lockdown.Lockdown;
 import java.util.*;
 
 public class CommandManager implements CommandExecutor {
-    private final Set<ICommand> commands = new HashSet<>();
     private final Map<String, ICommand> registeredCommands = new HashMap<>();
     // пришлось тут костылить, чтобы конфликтов не было
     // мапа вида ICommand: help: ICommand(help), cmd1, cmd2, etc.. (используется name для сравнения с args[0]
@@ -19,6 +18,7 @@ public class CommandManager implements CommandExecutor {
     private final Map<ICommand, Map<String, ICommand>> parentsMap = new HashMap<>();
     // я хз тут мб можно и по-другому реализовать, но пока что так
     public CommandManager(Lockdown instance){
+        Set<ICommand> commands = new HashSet<>();
         // команды добавлять сюда
         commands.add(new LockdownCommand());
         commands.add(new LockdownDevCommand());
@@ -54,14 +54,14 @@ public class CommandManager implements CommandExecutor {
 
     @SuppressWarnings("NullableProblems")
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
-        // Stage pre1: preparing
+        // подготовка
         List<String> argsl = new ArrayList<>(Arrays.asList(args));
         ICommand toExec = getCommand(cmd.getName());
         CommandInfo toExecInfo = toExec.getClass().getAnnotation(CommandInfo.class);
         final String commandUsage = ChatColor.RED + "Использование: /" + toExecInfo.name() + " " + toExecInfo.usage();
         final String onlyPlayer = ChatColor.RED + "Данную команду можно выполнить только будучи игроком";
         final String onlyConsole = ChatColor.RED + "Данную команду можно выполнить только из консоли";
-        // Checks
+        // Проверки
         if(args.length < toExecInfo.minArgs()){
             sender.sendMessage(commandUsage);
             return true;
@@ -74,14 +74,14 @@ public class CommandManager implements CommandExecutor {
             sender.sendMessage(onlyConsole);
             return true;
         }
-        // Stage 1: execute simple command
+        // Запускаем команду, если у неё нет подкоманд
         if(!toExecInfo.hasChildren()) return executeCmd(toExec, sender, argsl);
 
-        // Stage 2: electric boogaloo (execute subcommand)
+        // Если есть, идём дальше
         String subCmd = argsl.get(0);
         argsl.remove(0);
         if(parentsMap.get(toExec).containsKey(subCmd)){
-            // Checks 2
+            // Ещё раз проверки
             CommandInfo subCmdInfo = parentsMap.get(toExec).get(subCmd).getClass().getAnnotation(CommandInfo.class);
             if(!(sender instanceof Player) && subCmdInfo.requirePlayer()){
                 sender.sendMessage(onlyPlayer);
@@ -93,7 +93,6 @@ public class CommandManager implements CommandExecutor {
             }
             return executeCmd(parentsMap.get(toExec).get(subCmd), sender, argsl);
         }
-        if(toExecInfo.allowExecuteSingle()) return executeCmd(toExec, sender, argsl);
         if(toExecInfo.defaultCmd().isEmpty()){
             sender.sendMessage(commandUsage);
             return true;
@@ -101,7 +100,7 @@ public class CommandManager implements CommandExecutor {
         return executeCmd(getCommand(toExecInfo.defaultCmd()), sender, argsl);
     }
     private boolean executeCmd(ICommand cmd, CommandSender sender, List<String> args){
-        switch(cmd.exec(this, sender, args, null)){
+        switch(cmd.exec(this, sender, args)){
             case ERROR_USAGE:
                 sender.sendMessage(ChatColor.RED + "Неверное использование команды");
                 break;
@@ -116,18 +115,17 @@ public class CommandManager implements CommandExecutor {
         }
         return true;
     }
-    public Set<ICommand> getCommandSet(){
-        return commands;
-    }
+    // Возвращает команду name (internalname)
     public ICommand getCommand(String name){
         return registeredCommands.get(name);
     }
-    public Map<String, ICommand> getChildCommands(ICommand parent){
-        return parentsMap.get(parent);
-    }
+
+    // Возвращает Map с подкомандами parent
     public Map<String, ICommand> getChildCommands(String parent){
         return parentsMap.get(getCommand(parent));
     }
+
+    // думаю, понятно, что оно делает
     private void addAnotherMapIntoMap(ICommand key, String toAddKey, ICommand toAddValue){
         Map<String, ICommand> map = new HashMap<>();
         if(parentsMap.get(key) != null) map = parentsMap.get(key);

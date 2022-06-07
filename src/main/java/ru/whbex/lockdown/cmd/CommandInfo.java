@@ -19,5 +19,4 @@ public @interface CommandInfo {
     boolean requirePlayer() default false;
     boolean onlyConsole() default false;
     boolean hasChildren() default false;
-    boolean allowExecuteSingle() default false;
 }

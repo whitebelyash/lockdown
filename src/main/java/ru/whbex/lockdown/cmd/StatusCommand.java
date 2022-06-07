@@ -6,9 +6,9 @@ import ru.whbex.lockdown.Lockdown;
 import ru.whbex.lockdown.Utils;
 
 import java.util.List;
-import java.util.Set;
 
-@CommandInfo(name = "status",
+@CommandInfo(
+        name = "status",
         internalname = "status",
         description = "Просмотр статуса Lockdown",
         permission = "lockdown.use.status",
@@ -16,7 +16,7 @@ import java.util.Set;
 public class StatusCommand implements ICommand {
 
     @Override
-    public ExitStatus exec(CommandManager manager, CommandSender sender, List<String> args, Set<String> flags) {
+    public ExitStatus exec(CommandManager manager, CommandSender sender, List<String> args) {
         final String pref = ChatColor.GOLD + "Lockdown " + ChatColor.DARK_GRAY + "> " + ChatColor.RESET;
         sender.sendMessage(pref + "Сервер закрыт: " + Utils.parseBool(Lockdown.getInstance().isActive()));
         return ExitStatus.SUCCESS;

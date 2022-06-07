@@ -6,13 +6,12 @@ import ru.whbex.lockdown.cmd.CommandManager;
 
 public final class Lockdown extends JavaPlugin {
     private static Lockdown instance;
-    private CommandManager cmdmgr;
     private boolean active = false;
     private String kickMessage = "Denied";
 
     @Override
     public void onEnable() {
-        cmdmgr = new CommandManager(this);
+        new CommandManager(this);
         getServer().getPluginManager().registerEvents(new JoinListener(), this);
         this.saveDefaultConfig();
         this.setupConfig();
@@ -36,7 +35,7 @@ public final class Lockdown extends JavaPlugin {
         this.setupConfig();
         instance = this;
     }
-    public CommandManager getCommandManager(){return cmdmgr;}
+
     public static Lockdown getInstance(){ return instance; }
     public void setActive(boolean set) { active = set; }
     public boolean isActive(){ return active; }
@@ -50,6 +49,5 @@ public final class Lockdown extends JavaPlugin {
     }
     private void saveFieldsToConfig(){
         this.getConfig().set("lockdown-active", active);
-        this.getConfig().set("kick-message", kickMessage);
     }
 }
