@@ -27,6 +27,7 @@ public class CommandManager implements CommandExecutor {
         commands.add(new StatusCommand());
         commands.add(new ToggleCommand());
         commands.add(new AboutCommand());
+        commands.add(new ReloadCommand());
         // регистрация команд
         commands.forEach(cmd -> {
             String cmdName = cmd.getClass().getAnnotation(CommandInfo.class).internalname();
